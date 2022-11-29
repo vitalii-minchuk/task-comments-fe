@@ -15,7 +15,15 @@ function Posts() {
           <Button onClick={onOpen}>Add post</Button>
           <Flex>d</Flex>
         </Flex>
-        <Box>d</Box>
+        <Box>
+          <Flex>
+            <Box>dd</Box>
+            <Box mx={4} _hover={{ outline: '2px solid white' }}>
+              dd
+            </Box>
+            <Box>dd</Box>
+          </Flex>
+        </Box>
       </Box>
       <AddPostModal
         createNewPostHandler={createNewPostHandler}
