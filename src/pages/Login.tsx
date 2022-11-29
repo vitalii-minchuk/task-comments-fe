@@ -1,16 +1,16 @@
 import {
   Box,
   Center,
+  Container,
   FormControl,
-  FormHelperText,
   FormLabel,
   Input,
   Stack,
 } from '@chakra-ui/react';
 
-function Register() {
+function Login() {
   return (
-    <Center w="full" pt="50px">
+    <Center w="full" pt="80px">
       <Box
         w={{ base: '300px', md: '400px' }}
         bg="gray.800"
@@ -23,10 +23,6 @@ function Register() {
       >
         <form>
           <Stack gap={4}>
-            <FormControl>
-              <FormLabel>User name</FormLabel>
-              <Input type="text" />
-            </FormControl>
             <FormControl>
               <FormLabel>Email</FormLabel>
               <Input type="email" />
@@ -42,4 +38,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;

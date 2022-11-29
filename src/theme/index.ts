@@ -1,13 +1,12 @@
-import { extendTheme } from "@chakra-ui/react";
+import { extendTheme } from '@chakra-ui/react';
 
 export default extendTheme({
-  fonts: {
-    body: ["'Nunito', sans-serif"],
-  },
   styles: {
     global: () => ({
       body: {
-        bg: "white",
+        bg: '#05071A',
+        color: '#EEEFFC',
+        fontFamily: ["'Nunito', sans-serif"],
       },
     }),
   },
