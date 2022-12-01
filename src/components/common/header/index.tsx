@@ -12,10 +12,26 @@ function Header() {
             Logo
           </Heading>
           <Flex gap="10px">
-            <Button variant="outline" onClick={() => navigate('/login')}>
+            <Button
+              h="34"
+              rounded="full"
+              bgGradient="linear(to-l, #7928CA, #FF0080)"
+              _hover={{
+                shadow: '5px 5px 20px #7928CA',
+              }}
+              onClick={() => navigate('/login')}
+            >
               sign in
             </Button>
-            <Button variant="outline" onClick={() => navigate('/register')}>
+            <Button
+              h="34"
+              rounded="full"
+              bgGradient="linear(to-l, #7928CA, #FF0080)"
+              _hover={{
+                shadow: '5px 5px 20px #7928CA',
+              }}
+              onClick={() => navigate('/register')}
+            >
               sign up
             </Button>
           </Flex>

@@ -1,3 +1,4 @@
+import { memo, useState } from 'react';
 import {
   Button,
   FormControl,
@@ -11,7 +12,6 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 
 interface IAddPostModal {
   isOpen: boolean;
@@ -24,7 +24,7 @@ function AddPostModal({
   createNewPostHandler,
 }: IAddPostModal) {
   const [value, setValue] = useState('');
-
+  console.log('post');
   const confirmHandler = () => {
     createNewPostHandler(value);
     onClose();
@@ -33,7 +33,7 @@ function AddPostModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent bgColor="gray.700">
         <ModalHeader>Modal Title</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -53,7 +53,7 @@ function AddPostModal({
             Close
           </Button>
           <Button onClick={confirmHandler} variant="ghost">
-            Secondary Action
+            Confirm
           </Button>
         </ModalFooter>
       </ModalContent>
