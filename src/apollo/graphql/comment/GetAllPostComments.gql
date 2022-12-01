@@ -2,5 +2,10 @@ query GetAllPostComments($input: GetPostCommentsInput!) {
   getAllPostComments(input: $input) {
     text
     id
+    createdAt
+    parentId
+    user {
+      username
+    }
   }
 }

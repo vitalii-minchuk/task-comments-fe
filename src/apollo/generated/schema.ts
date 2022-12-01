@@ -18,15 +18,18 @@ export type Scalars = {
 
 export type Comment = {
   __typename?: 'Comment';
-  authorId: Scalars['String'];
   children?: Maybe<Comment>;
+  createdAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
-  parent?: Maybe<Comment>;
+  parentId?: Maybe<Scalars['String']>;
   postId: Scalars['String'];
   text: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  user: User;
 };
 
 export type CreateCommentInput = {
+  parentId?: InputMaybe<Scalars['String']>;
   postId: Scalars['String'];
   text: Scalars['String'];
 };
@@ -125,7 +128,7 @@ export type GetAllPostCommentsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllPostCommentsQuery = { __typename?: 'Query', getAllPostComments: Array<{ __typename?: 'Comment', text: string, id: string }> };
+export type GetAllPostCommentsQuery = { __typename?: 'Query', getAllPostComments: Array<{ __typename?: 'Comment', text: string, id: string, createdAt?: any | null, parentId?: string | null, user: { __typename?: 'User', username: string } }> };
 
 export type CreatePostMutationVariables = Exact<{
   input: CreatePostInput;
@@ -192,6 +195,11 @@ export const GetAllPostCommentsDocument = gql`
   getAllPostComments(input: $input) {
     text
     id
+    createdAt
+    parentId
+    user {
+      username
+    }
   }
 }
     `;

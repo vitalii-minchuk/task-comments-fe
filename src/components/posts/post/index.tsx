@@ -1,12 +1,13 @@
-import { Box, Button, Stack, useDisclosure } from '@chakra-ui/react';
-import { Dispatch, memo, SetStateAction } from 'react';
+import { Box, Button, useDisclosure } from '@chakra-ui/react';
+import { memo } from 'react';
 
 import {
+  Comment,
   Post,
   useCreateNewCommentMutation,
   useGetAllPostCommentsQuery,
 } from '../../../apollo/generated/schema';
-import Comment from '../comments/Comment';
+import CommentsSection from '../comments';
 import AddCommentModal from '../modals/AddCommentModal';
 
 interface IPostProps {
@@ -17,7 +18,7 @@ function SinglePost({ post }: IPostProps) {
   const { data: allComments, refetch } = useGetAllPostCommentsQuery({
     variables: { input: { postId: post.id } },
   });
-  const [createNewComment, { data: newComment }] = useCreateNewCommentMutation({
+  const [createNewComment] = useCreateNewCommentMutation({
     onCompleted() {
       refetch();
     },
@@ -39,12 +40,11 @@ function SinglePost({ post }: IPostProps) {
       <Box border="1px solid white">
         {post.text} {post.user.username}
         <Button onClick={onOpen}>ok</Button>
-        <Stack>
-          {allComments?.getAllPostComments?.map((comment) => (
-            <Comment key={comment.id} comment={comment} />
-          ))}
-        </Stack>
       </Box>
+      <CommentsSection
+        postId={post.id}
+        comments={allComments?.getAllPostComments as Array<Comment>}
+      />
       <AddCommentModal
         createNewCommentHandler={createNewCommentHandler}
         isOpen={isOpen}
