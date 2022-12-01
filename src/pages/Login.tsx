@@ -1,5 +1,4 @@
 import { FormEvent, useState } from 'react';
-import { useMutation } from '@apollo/client';
 import {
   Box,
   Button,
@@ -11,15 +10,18 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
-import { LOGIN } from '../apollo/generated';
+import { LoginUserInput, useLoginMutation } from '../apollo/generated/schema';
 
 function Login() {
-  const [value, setValue] = useState<{ email: string; password: string }>({
-    email: '',
-    password: '',
+  const [value, setValue] = useState<LoginUserInput>({} as LoginUserInput);
+  const navigate = useNavigate();
+  const [login, { error, loading }] = useLoginMutation({
+    onCompleted() {
+      navigate('/');
+    },
   });
-  const [login, { error, loading }] = useMutation(LOGIN);
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
@@ -28,7 +30,7 @@ function Login() {
         input: { password: value.password, email: value.email },
       },
     });
-    setValue({ email: '', password: '' });
+    setValue({} as LoginUserInput);
   };
 
   return (

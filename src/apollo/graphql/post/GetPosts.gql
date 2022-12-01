@@ -1,9 +1,3 @@
-mutation CreatePost($input: CreatePostInput!) {
-  createNewPost(input: $input) {
-    text
-  }
-}
-
 query GetPosts {
   getAllPosts {
     id

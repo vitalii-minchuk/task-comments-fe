@@ -1,0 +1,6 @@
+query GetAllPostComments($input: GetPostCommentsInput!) {
+  getAllPostComments(input: $input) {
+    text
+    id
+  }
+}

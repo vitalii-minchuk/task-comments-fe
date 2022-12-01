@@ -1,4 +1,3 @@
-import { FormEvent, useState } from 'react';
 import {
   Box,
   Button,
@@ -8,20 +7,24 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import { useMutation } from '@apollo/client';
-import { REGISTER } from '../apollo/generated';
+import { FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import {
+  RegisterUserInput,
+  useRegisterUserMutation,
+} from '../apollo/generated/schema';
 
 function Register() {
-  const [value, setValue] = useState<{
-    email: string;
-    password: string;
-    username: string;
-  }>({
-    email: '',
-    password: '',
-    username: '',
+  const [value, setValue] = useState<RegisterUserInput>(
+    {} as RegisterUserInput
+  );
+  const navigate = useNavigate();
+  const [registerUser] = useRegisterUserMutation({
+    onCompleted() {
+      navigate('/');
+    },
   });
-  const [registerUser, { data, error, loading }] = useMutation(REGISTER);
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
@@ -34,7 +37,7 @@ function Register() {
         },
       },
     });
-    setValue({ email: '', password: '', username: '' });
+    setValue({ username: '', password: '', email: '' });
   };
   return (
     <Center w="full" pt="50px">
@@ -53,7 +56,6 @@ function Register() {
             <FormControl>
               <FormLabel>User name</FormLabel>
               <Input
-                value={value.username}
                 onChange={(e) =>
                   setValue({ ...value, username: e.target.value })
                 }
@@ -63,7 +65,6 @@ function Register() {
             <FormControl>
               <FormLabel>Email</FormLabel>
               <Input
-                value={value.email}
                 onChange={(e) => setValue({ ...value, email: e.target.value })}
                 type="email"
               />
@@ -71,7 +72,6 @@ function Register() {
             <FormControl>
               <FormLabel>Password</FormLabel>
               <Input
-                value={value.password}
                 onChange={(e) =>
                   setValue({ ...value, password: e.target.value })
                 }

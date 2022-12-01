@@ -1,7 +1,3 @@
-mutation Login($input: LoginUserInput!) {
-  login(input: $input)
-}
-
 mutation RegisterUser($input: RegisterUserInput!) {
   registerUser(input: $input) {
     username
