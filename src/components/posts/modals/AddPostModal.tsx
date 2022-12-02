@@ -1,8 +1,6 @@
-import { memo, useState } from 'react';
 import {
   Button,
   FormControl,
-  FormLabel,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,6 +10,7 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 
 interface IAddPostModal {
   isOpen: boolean;
@@ -24,7 +23,7 @@ function AddPostModal({
   createNewPostHandler,
 }: IAddPostModal) {
   const [value, setValue] = useState('');
-  console.log('post');
+
   const confirmHandler = () => {
     createNewPostHandler(value);
     onClose();
@@ -34,12 +33,11 @@ function AddPostModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent bgColor="gray.700">
-        <ModalHeader>Modal Title</ModalHeader>
+        <ModalHeader>Post</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl>
             <FormControl>
-              <FormLabel>Post</FormLabel>
               <Textarea
                 onChange={(e) => setValue(e.target.value)}
                 value={value}

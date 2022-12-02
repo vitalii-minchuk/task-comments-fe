@@ -1,36 +1,47 @@
-import { FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
 import {
   Box,
   Button,
   Center,
   CircularProgress,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
 
-import { LoginUserInput, useLoginMutation } from '../apollo/generated/schema';
+import { useLoginMutation } from '../apollo/generated/schema';
+import { loginUserValidationSchema, UserSubmitLoginForm } from '../validation';
 
 function Login() {
-  const [value, setValue] = useState<LoginUserInput>({} as LoginUserInput);
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<UserSubmitLoginForm>({
+    mode: 'onTouched',
+    resolver: yupResolver(loginUserValidationSchema),
+  });
+
   const [login, { error, loading }] = useLoginMutation({
     onCompleted() {
+      reset();
       navigate('/');
     },
   });
 
-  const submitHandler = (e: FormEvent) => {
-    e.preventDefault();
+  const submitHandler = (data: UserSubmitLoginForm) => {
     login({
       variables: {
-        input: { password: value.password, email: value.email },
+        input: { password: data.password, email: data.email },
       },
     });
-    setValue({} as LoginUserInput);
   };
 
   return (
@@ -49,29 +60,27 @@ function Login() {
           rounded="lg"
         >
           {error && <Text>{error.message}</Text>}
-          <form>
+          <form onSubmit={handleSubmit(submitHandler)}>
             <Stack gap={4}>
-              <FormControl>
+              <FormControl isInvalid={!!errors.email}>
                 <FormLabel>Email</FormLabel>
-                <Input
-                  onChange={(e) =>
-                    setValue({ ...value, email: e.target.value })
-                  }
-                  type="email"
-                />
+                <Input id="email" type="email" {...register('email')} />
+                <FormErrorMessage>
+                  {errors.email && errors.email.message}
+                </FormErrorMessage>
               </FormControl>
-              <FormControl>
+              <FormControl isInvalid={!!errors.password}>
                 <FormLabel>Password</FormLabel>
                 <Input
-                  onChange={(e) => {
-                    setValue({ ...value, password: e.target.value });
-                  }}
+                  id="password"
+                  {...register('password')}
                   type="password"
                 />
+                <FormErrorMessage>
+                  {errors.password && errors.password.message}
+                </FormErrorMessage>
               </FormControl>
-              <Button onClick={submitHandler} type="submit">
-                ok
-              </Button>
+              <Button type="submit">Submit</Button>
             </Stack>
           </form>
         </Box>

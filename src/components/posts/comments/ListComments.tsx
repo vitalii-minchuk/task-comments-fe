@@ -40,6 +40,7 @@ function SingleComment({ comment, postId, refetchComments }: ICommentProps) {
         <Box>
           {comment.text} {comment.user.username}
         </Box>
+        <img src={comment.image_url} alt="some images" />
         <Button onClick={onOpen}>ok</Button>
 
         <ListComments
@@ -68,7 +69,7 @@ function ListComments({
   refetchComments,
 }: IListCommentsProps) {
   return (
-    <Box border="1px solid green" pl="15px">
+    <Box borderLeft="1px solid" borderColor="gray.600" pl="15px">
       {comments?.map((comment) => (
         <SingleComment
           refetchComments={refetchComments}

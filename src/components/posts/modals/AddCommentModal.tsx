@@ -1,8 +1,6 @@
-import { memo, useState } from 'react';
 import {
   Button,
   FormControl,
-  FormLabel,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,24 +10,29 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
+import { useState } from 'react';
+import ImageResize from '../../common/image-resize';
 
-interface IAddCommentModal {
+interface IAddCommentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  createNewCommentHandler: (comment: string) => void;
+  createNewCommentHandler: (comment: string, image_url: string) => void;
 }
 function AddCommentModal({
   isOpen,
   onClose,
   createNewCommentHandler,
-}: IAddCommentModal) {
-  const [value, setValue] = useState('');
+}: IAddCommentModalProps) {
+  const [commentText, setCommentText] = useState('');
+  const [image, setImage] = useState('');
 
   const confirmHandler = () => {
-    createNewCommentHandler(value);
+    createNewCommentHandler(commentText, image);
     onClose();
+    setCommentText('');
+    setImage('');
   };
-  console.log('comment');
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -38,13 +41,13 @@ function AddCommentModal({
         <ModalCloseButton />
         <ModalBody>
           <FormControl>
-            <FormControl>
-              <Textarea
-                onChange={(e) => setValue(e.target.value)}
-                value={value}
-              />
-            </FormControl>
+            <Textarea
+              onChange={(e) => setCommentText(e.target.value)}
+              value={commentText}
+            />
           </FormControl>
+
+          <ImageResize setImage={setImage} />
         </ModalBody>
 
         <ModalFooter>

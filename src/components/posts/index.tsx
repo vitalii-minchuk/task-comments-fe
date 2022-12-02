@@ -10,12 +10,12 @@ import SinglePost from './post';
 
 function Posts() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data, refetch } = useGetPostsQuery({
+  const { data, refetch: refetchPosts } = useGetPostsQuery({
     refetchWritePolicy: 'merge',
   });
   const [createNewPost] = useCreatePostMutation({
     onCompleted() {
-      refetch();
+      refetchPosts();
     },
   });
 

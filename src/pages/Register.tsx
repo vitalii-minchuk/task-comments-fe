@@ -16,13 +16,11 @@ import {
 } from '../apollo/generated/schema';
 
 function Register() {
-  const [value, setValue] = useState<RegisterUserInput>(
-    {} as RegisterUserInput
-  );
   const navigate = useNavigate();
   const [registerUser] = useRegisterUserMutation({
     onCompleted() {
       navigate('/');
+      reset();
     },
   });
 
@@ -37,7 +35,6 @@ function Register() {
         },
       },
     });
-    setValue({ username: '', password: '', email: '' });
   };
   return (
     <Center w="full" pt="50px">
@@ -78,9 +75,7 @@ function Register() {
                 type="password"
               />
             </FormControl>
-            <Button onClick={submitHandler} type="submit">
-              ok
-            </Button>
+            <Button type="submit">ok</Button>
           </Stack>
         </form>
       </Box>
