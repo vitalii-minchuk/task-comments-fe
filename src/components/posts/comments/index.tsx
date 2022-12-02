@@ -1,10 +1,9 @@
-import { memo, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
-import _filter from 'lodash.filter';
-import _isNull from 'lodash.isnull';
+import { memo } from 'react';
 
 import { Comment, Post } from '../../../apollo/generated/schema';
-import RootComment from './RootComment';
+import formatComments from '../../../helpers/format-coments';
+import ListComments from './ListComments';
 
 interface ICommentsSectionProps {
   comments: Array<Comment> | null;
@@ -12,17 +11,16 @@ interface ICommentsSectionProps {
 }
 
 function CommentsSection({ comments, postId }: ICommentsSectionProps) {
-  const rootComments = useMemo(() => {
-    return _filter(comments, (comment) => {
-      return _isNull(comment?.parentId);
-    });
-  }, [comments]);
-
   return (
-    <Box border="1px solid red">
-      {rootComments?.map((comment) => (
-        <RootComment key={comment.id} comment={comment} postId={postId} />
-      ))}
+    <Box border="1px solid red" pl="15px">
+      <Box>
+        {comments && (
+          <ListComments
+            postId={postId}
+            comments={formatComments(comments || [])}
+          />
+        )}
+      </Box>
     </Box>
   );
 }

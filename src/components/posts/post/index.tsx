@@ -15,9 +15,10 @@ interface IPostProps {
 }
 function SinglePost({ post }: IPostProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data: allComments, refetch } = useGetAllPostCommentsQuery({
+  const { data, refetch } = useGetAllPostCommentsQuery({
     variables: { input: { postId: post.id } },
   });
+
   const [createNewComment] = useCreateNewCommentMutation({
     onCompleted() {
       refetch();
@@ -43,7 +44,7 @@ function SinglePost({ post }: IPostProps) {
       </Box>
       <CommentsSection
         postId={post.id}
-        comments={allComments?.getAllPostComments as Array<Comment>}
+        comments={data?.getAllPostComments as Array<Comment>}
       />
       <AddCommentModal
         createNewCommentHandler={createNewCommentHandler}

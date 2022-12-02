@@ -5,7 +5,9 @@ import {
   Comment,
   Post,
   useCreateNewCommentMutation,
+  useGetAllPostCommentsQuery,
 } from '../../../apollo/generated/schema';
+import formatNestedComments from '../../../helpers/format-nested-comments';
 import AddCommentModal from '../modals/AddCommentModal';
 
 interface ICommentProps {
@@ -16,6 +18,13 @@ interface ICommentProps {
 function SingleComment({ comment, postId }: ICommentProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [createNewComment] = useCreateNewCommentMutation();
+  const { data } = useGetAllPostCommentsQuery({
+    variables: {
+      input: {
+        postId,
+      },
+    },
+  });
 
   const createNewCommentHandler = (newComment: string) => {
     createNewComment({
@@ -29,13 +38,20 @@ function SingleComment({ comment, postId }: ICommentProps) {
     });
   };
 
+  console.log(comment);
   return (
     <>
       <Box>
         <Box>{comment.text}</Box>
         <Button onClick={onOpen}>ok</Button>
-        {comment.children && comment?.children?.length > 0 && (
-          <ListComments postId={postId} comments={comment.children} />
+        {comment && (
+          <ListComments
+            postId={postId}
+            comments={formatNestedComments({
+              data: data?.getAllPostComments as Array<Comment>,
+              id: comment.id || '',
+            })}
+          />
         )}
       </Box>
       <AddCommentModal
@@ -52,9 +68,8 @@ interface IListCommentsProps {
   postId: Post['id'];
 }
 function ListComments({ comments, postId }: IListCommentsProps) {
-  console.log('list', comments);
   return (
-    <Box border="1px solid green">
+    <Box border="1px solid green" pl="15px">
       {comments?.map((comment) => (
         <SingleComment key={comment.id} postId={postId} comment={comment} />
       ))}
