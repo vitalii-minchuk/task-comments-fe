@@ -1,39 +1,36 @@
 /* eslint-disable no-continue */
-import _isNull from 'lodash.isnull';
-import _filter from 'lodash.filter';
 import { Comment } from '../apollo/generated/schema';
 
-// type CommentWithChildren = Comment & {
-//   children: Array<CommentWithChildren>;
-// };
+export type CommentWithChildren = Comment & {
+  children: Array<CommentWithChildren>;
+};
 function formatComments(comments: Array<Comment>) {
-  const roots = _filter(comments, (comment) => {
-    return _isNull(comment.parentId);
-  });
+  const arr = comments.map((comment) => ({
+    ...comment,
+    children: [],
+  }));
 
-  // const map = new Map();
+  const map = new Map();
 
-  // const roots: Array<CommentWithChildren> = [];
+  const roots: Array<CommentWithChildren> = [];
 
-  // for (let i = 0; i < comments.length; i += 0) {
-  //   const commentId = comments[i]?.id;
+  for (let i = 0; i < arr.length; i += 1) {
+    const commentId = arr[i]?.id;
 
-  //   map.set(commentId, i);
+    map.set(commentId, i);
 
-  //   const obj = Object.create(comments[i]);
+    if (typeof arr[i].parentId === 'string') {
+      const parentCommentIndex: number = map.get(arr[i].parentId);
 
-  //   (obj as CommentWithChildren).children = [];
+      (arr[parentCommentIndex] as CommentWithChildren).children?.push(
+        arr[i] as CommentWithChildren
+      );
 
-  //   if (typeof obj?.parentId === 'string') {
-  //     const parentCommentIndex = map.get(obj?.parentId);
+      continue;
+    }
 
-  //     (comments[parentCommentIndex] as CommentWithChildren).children.push(
-  //       obj as CommentWithChildren
-  //     );
-
-  //     continue;
-  //   }
-  // }
+    roots.push(arr[i] as CommentWithChildren);
+  }
 
   return roots;
 }

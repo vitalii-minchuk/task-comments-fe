@@ -2,27 +2,23 @@
 import { Box, Button, useDisclosure } from '@chakra-ui/react';
 
 import {
-  Comment,
   Post,
   useCreateNewCommentMutation,
-  useGetAllPostCommentsQuery,
 } from '../../../apollo/generated/schema';
-import formatNestedComments from '../../../helpers/format-nested-comments';
+import { CommentWithChildren } from '../../../helpers/format-coments';
 import AddCommentModal from '../modals/AddCommentModal';
 
 interface ICommentProps {
-  comment: Comment;
+  refetchComments: () => void;
+  comment: CommentWithChildren;
   postId: Post['id'];
 }
 
-function SingleComment({ comment, postId }: ICommentProps) {
+function SingleComment({ comment, postId, refetchComments }: ICommentProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [createNewComment] = useCreateNewCommentMutation();
-  const { data } = useGetAllPostCommentsQuery({
-    variables: {
-      input: {
-        postId,
-      },
+  const [createNewComment] = useCreateNewCommentMutation({
+    onCompleted() {
+      refetchComments();
     },
   });
 
@@ -38,21 +34,19 @@ function SingleComment({ comment, postId }: ICommentProps) {
     });
   };
 
-  console.log(comment);
   return (
     <>
       <Box>
-        <Box>{comment.text}</Box>
+        <Box>
+          {comment.text} {comment.user.username}
+        </Box>
         <Button onClick={onOpen}>ok</Button>
-        {comment && (
-          <ListComments
-            postId={postId}
-            comments={formatNestedComments({
-              data: data?.getAllPostComments as Array<Comment>,
-              id: comment.id || '',
-            })}
-          />
-        )}
+
+        <ListComments
+          refetchComments={refetchComments}
+          postId={postId}
+          comments={comment.children}
+        />
       </Box>
       <AddCommentModal
         createNewCommentHandler={createNewCommentHandler}
@@ -64,14 +58,24 @@ function SingleComment({ comment, postId }: ICommentProps) {
 }
 
 interface IListCommentsProps {
-  comments: Array<Comment>;
+  comments: Array<CommentWithChildren>;
   postId: Post['id'];
+  refetchComments: () => void;
 }
-function ListComments({ comments, postId }: IListCommentsProps) {
+function ListComments({
+  comments,
+  postId,
+  refetchComments,
+}: IListCommentsProps) {
   return (
     <Box border="1px solid green" pl="15px">
       {comments?.map((comment) => (
-        <SingleComment key={comment.id} postId={postId} comment={comment} />
+        <SingleComment
+          refetchComments={refetchComments}
+          key={comment.id}
+          postId={postId}
+          comment={comment}
+        />
       ))}
     </Box>
   );
