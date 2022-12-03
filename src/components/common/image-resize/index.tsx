@@ -24,28 +24,39 @@ interface IImageResizeProps {
   setImage: Dispatch<SetStateAction<string>>;
 }
 function ImageResize({ setImage }: IImageResizeProps) {
-  const [newImage, setNewImage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [shownImage, setShownImage] = useState('');
+
   const onChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    setErrorMessage('');
     if (!event.target.files) return;
 
     try {
       const file = event.target.files[0];
       const image = await resizeFile(file);
-      setNewImage(image as string);
+
+      setShownImage(image as string);
+
+      if (file.size > 100000) {
+        throw new Error(`File is too big`);
+      }
+
       setImage(image as string);
-    } catch (err) {
-      console.log(err);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setErrorMessage(err.message);
     }
   };
   return (
     <Stack>
+      {errorMessage && <p>{errorMessage}</p>}
       <input
         accept="image/jpeg, image/png, image/gif"
         type="file"
         onChange={onChange}
       />
       <Box h={70} w={100}>
-        <img src={newImage} alt="" />
+        <img src={shownImage} alt="" />
       </Box>
     </Stack>
   );

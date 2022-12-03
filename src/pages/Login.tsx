@@ -1,6 +1,3 @@
-import { useNavigate } from 'react-router-dom';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
 import {
   Box,
   Button,
@@ -11,13 +8,19 @@ import {
   FormLabel,
   Input,
   Stack,
-  Text,
+  useToast,
 } from '@chakra-ui/react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 import { useLoginMutation } from '../apollo/generated/schema';
+import makeToast, { ToastStatus } from '../helpers/make-toast';
 import { loginUserValidationSchema, UserSubmitLoginForm } from '../validation';
 
 function Login() {
+  const toast = useToast();
   const navigate = useNavigate();
   const {
     register,
@@ -33,8 +36,27 @@ function Login() {
     onCompleted() {
       reset();
       navigate('/');
+      toast(
+        makeToast({
+          description: 'User has been logged in',
+          title: 'Login user',
+          status: ToastStatus.SUCCESS,
+        })
+      );
     },
   });
+
+  useEffect(() => {
+    if (error?.message) {
+      toast(
+        makeToast({
+          description: error.message,
+          title: 'Login user',
+          status: ToastStatus.ERROR,
+        })
+      );
+    }
+  }, [error, toast]);
 
   const submitHandler = (data: UserSubmitLoginForm) => {
     login({
@@ -54,12 +76,11 @@ function Login() {
           bg="gray.800"
           px={4}
           py={8}
-          boxShadow="3px 3px 15px gray"
+          boxShadow="3px 3px 15px #7928CA"
           border="1px solid"
           borderColor="gray.500"
           rounded="lg"
         >
-          {error && <Text>{error.message}</Text>}
           <form onSubmit={handleSubmit(submitHandler)}>
             <Stack gap={4}>
               <FormControl isInvalid={!!errors.email}>

@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  FormErrorMessage,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,7 +11,10 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+
+import { SubmitTextForm, textValidationSchema } from '../../../validation';
 
 interface IAddPostModal {
   isOpen: boolean;
@@ -22,38 +26,60 @@ function AddPostModal({
   onClose,
   createNewPostHandler,
 }: IAddPostModal) {
-  const [value, setValue] = useState('');
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SubmitTextForm>({
+    mode: 'onTouched',
+    resolver: yupResolver(textValidationSchema),
+  });
 
-  const confirmHandler = () => {
-    createNewPostHandler(value);
+  const submitHandler = (data: SubmitTextForm) => {
+    createNewPostHandler(data.text);
     onClose();
+    reset();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        reset();
+      }}
+    >
       <ModalOverlay />
       <ModalContent bgColor="gray.700">
         <ModalHeader>Post</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <FormControl>
-            <FormControl>
-              <Textarea
-                onChange={(e) => setValue(e.target.value)}
-                value={value}
-              />
+        <form onSubmit={handleSubmit(submitHandler)}>
+          <ModalBody>
+            <FormControl isInvalid={!!errors.text}>
+              <Textarea id="text" {...register('text')} />
+              <FormErrorMessage>
+                {errors.text && errors.text.message}
+              </FormErrorMessage>
             </FormControl>
-          </FormControl>
-        </ModalBody>
+          </ModalBody>
 
-        <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
-          </Button>
-          <Button onClick={confirmHandler} variant="ghost">
-            Confirm
-          </Button>
-        </ModalFooter>
+          <ModalFooter>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={() => {
+                onClose();
+                reset();
+              }}
+            >
+              Close
+            </Button>
+            <Button type="submit" variant="ghost">
+              Confirm
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );
