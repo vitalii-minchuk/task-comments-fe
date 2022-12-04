@@ -1,5 +1,6 @@
-query GetPosts {
-  getAllPosts {
+query GetPosts($posts: GetPostsInput!) {
+  getAllPosts(posts: $posts) {
+    total
     id
     createdAt
     text

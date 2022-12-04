@@ -1,5 +1,5 @@
-import { Box, Button, useDisclosure } from '@chakra-ui/react';
-import { memo } from 'react';
+import { Box, Button, useDisclosure, useToast } from '@chakra-ui/react';
+import { memo, useEffect } from 'react';
 
 import {
   Comment,
@@ -7,6 +7,7 @@ import {
   useCreateNewCommentMutation,
   useGetAllPostCommentsQuery,
 } from '../../../apollo/generated/schema';
+import makeToast, { ToastStatus } from '../../../helpers/make-toast';
 import CommentsSection from '../comments';
 import AddCommentModal from '../modals/AddCommentModal';
 
@@ -14,8 +15,10 @@ interface IPostProps {
   post: Post;
 }
 function SinglePost({ post }: IPostProps) {
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, refetch: refetchComments } = useGetAllPostCommentsQuery({
+    refetchWritePolicy: 'merge',
     variables: {
       input: {
         postId: post.id,
@@ -23,7 +26,7 @@ function SinglePost({ post }: IPostProps) {
     },
   });
 
-  const [createNewComment] = useCreateNewCommentMutation({
+  const [createNewComment, { error }] = useCreateNewCommentMutation({
     onCompleted() {
       refetchComments();
     },
@@ -40,6 +43,18 @@ function SinglePost({ post }: IPostProps) {
       },
     });
   };
+
+  useEffect(() => {
+    if (error?.message) {
+      toast(
+        makeToast({
+          description: error.message,
+          title: 'Create comment',
+          status: ToastStatus.ERROR,
+        })
+      );
+    }
+  }, [error, toast]);
 
   return (
     <>

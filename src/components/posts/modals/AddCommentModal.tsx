@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  FormErrorMessage,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,7 +11,10 @@ import {
   ModalOverlay,
   Textarea,
 } from '@chakra-ui/react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { SubmitTextForm, textValidationSchema } from '../../../validation';
 import ImageResize from '../../common/image-resize';
 
 interface IAddCommentModalProps {
@@ -23,41 +27,65 @@ function AddCommentModal({
   onClose,
   createNewCommentHandler,
 }: IAddCommentModalProps) {
-  const [commentText, setCommentText] = useState('');
   const [image, setImage] = useState('');
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SubmitTextForm>({
+    mode: 'onTouched',
+    resolver: yupResolver(textValidationSchema),
+  });
 
-  const confirmHandler = () => {
-    createNewCommentHandler(commentText, image);
+  const submitHandler = (data: SubmitTextForm) => {
+    createNewCommentHandler(data.text, image);
+    reset();
     onClose();
-    setCommentText('');
-    setImage('');
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        reset();
+      }}
+    >
       <ModalOverlay />
-      <ModalContent bgColor="gray.700">
+      <ModalContent
+        bgGradient="radial(gray.900, gray.700)"
+        borderColor="transparent"
+      >
         <ModalHeader>Comment</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <FormControl>
-            <Textarea
-              onChange={(e) => setCommentText(e.target.value)}
-              value={commentText}
-            />
-          </FormControl>
+        <form onSubmit={handleSubmit(submitHandler)}>
+          <ModalBody>
+            <FormControl isInvalid={!!errors.text}>
+              <Textarea id="text" {...register('text')} />
+              <FormErrorMessage>
+                {errors.text && errors.text.message}
+              </FormErrorMessage>
+            </FormControl>
+            <ImageResize setImage={setImage} />
+          </ModalBody>
 
-          <ImageResize setImage={setImage} />
-        </ModalBody>
-
-        <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
-          </Button>
-          <Button onClick={confirmHandler} variant="ghost">
-            Confirm
-          </Button>
-        </ModalFooter>
+          <ModalFooter>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={() => {
+                onClose();
+                reset();
+              }}
+            >
+              Close
+            </Button>
+            <Button type="submit" variant="ghost">
+              Confirm
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );

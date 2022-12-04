@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -8,6 +9,7 @@ import {
   FormLabel,
   Input,
   Stack,
+  useToast,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,8 +19,10 @@ import {
   registerUserValidationSchema,
   UserSubmitRegisterForm,
 } from '../validation';
+import makeToast, { ToastStatus } from '../helpers/make-toast';
 
 function Register() {
+  const toast = useToast();
   const navigate = useNavigate();
   const {
     register,
@@ -29,10 +33,17 @@ function Register() {
     mode: 'onTouched',
     resolver: yupResolver(registerUserValidationSchema),
   });
-  const [registerUser] = useRegisterUserMutation({
+  const [registerUser, { loading, error }] = useRegisterUserMutation({
     onCompleted() {
       navigate('/');
       reset();
+      toast(
+        makeToast({
+          description: 'User has been registered',
+          title: 'Register user',
+          status: ToastStatus.SUCCESS,
+        })
+      );
     },
   });
 
@@ -47,6 +58,18 @@ function Register() {
       },
     });
   };
+
+  useEffect(() => {
+    if (error?.message) {
+      toast(
+        makeToast({
+          description: error.message,
+          title: 'Register user',
+          status: ToastStatus.ERROR,
+        })
+      );
+    }
+  }, [error, toast]);
   return (
     <Center w="full" pt="50px">
       <Box
@@ -82,7 +105,9 @@ function Register() {
                 {errors.password && errors.password.message}
               </FormErrorMessage>
             </FormControl>
-            <Button type="submit">ok</Button>
+            <Button isLoading={loading} type="submit">
+              ok
+            </Button>
           </Stack>
         </form>
       </Box>

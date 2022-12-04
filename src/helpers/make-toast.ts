@@ -20,7 +20,7 @@ function makeToast({
     title,
     description,
     status,
-    duration: 2000,
+    duration: 3000,
     isClosable: true,
   };
 }

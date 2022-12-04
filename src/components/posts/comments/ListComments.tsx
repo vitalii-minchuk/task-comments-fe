@@ -22,11 +22,12 @@ function SingleComment({ comment, postId, refetchComments }: ICommentProps) {
     },
   });
 
-  const createNewCommentHandler = (newComment: string) => {
+  const createNewCommentHandler = (newComment: string, image_url: string) => {
     createNewComment({
       variables: {
         input: {
           text: newComment,
+          image_url,
           postId,
           parentId: comment.id,
         },
