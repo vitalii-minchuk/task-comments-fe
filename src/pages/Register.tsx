@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Center,
+  CircularProgress,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -11,7 +12,7 @@ import {
   Stack,
   useToast,
 } from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useRegisterUserMutation } from '../apollo/generated/schema';
@@ -24,6 +25,7 @@ import makeToast, { ToastStatus } from '../helpers/make-toast';
 function Register() {
   const toast = useToast();
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -103,6 +105,17 @@ function Register() {
               <Input id="password" {...register('password')} type="password" />
               <FormErrorMessage>
                 {errors.password && errors.password.message}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={!!errors.homePageUrl}>
+              <FormLabel>Home page url</FormLabel>
+              <Input
+                id="homePageUrl"
+                {...register('homePageUrl')}
+                type="text"
+              />
+              <FormErrorMessage>
+                {errors.homePageUrl && errors.homePageUrl.message}
               </FormErrorMessage>
             </FormControl>
             <Button isLoading={loading} type="submit">

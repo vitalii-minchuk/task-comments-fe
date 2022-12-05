@@ -1,4 +1,6 @@
 import { Box, Button, useDisclosure, useToast } from '@chakra-ui/react';
+import moment from 'moment';
+
 import { memo, useEffect } from 'react';
 
 import {
@@ -60,6 +62,9 @@ function SinglePost({ post }: IPostProps) {
     <>
       <Box border="1px solid white">
         {post.text} {post.user.username}
+        {moment(new Date(post?.createdAt)).fromNow()}
+        {post.user.avatar && <img src={post.user.avatar} alt="avatar" />}
+        <img src={post.image_url} alt="some images" />
         <Button onClick={onOpen}>ok</Button>
       </Box>
       <CommentsSection

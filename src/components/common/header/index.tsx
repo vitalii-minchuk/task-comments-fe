@@ -48,6 +48,11 @@ function Header() {
             </Flex>
           )}
         </Flex>
+        <Box position="absolute" right={0}>
+          <Button variant="text" onClick={() => navigate('/info')}>
+            info
+          </Button>
+        </Box>
       </Container>
     </Box>
   );

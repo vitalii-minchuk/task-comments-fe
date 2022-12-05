@@ -12,20 +12,24 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { SubmitTextForm, textValidationSchema } from '../../../validation';
+import ImageResize from '../../common/image-resize';
+import { MessageType } from '../../../types';
 
 interface IAddPostModal {
   isOpen: boolean;
   onClose: () => void;
-  createNewPostHandler: (post: string) => void;
+  createNewPostHandler: ({ message, picture }: MessageType) => void;
 }
 function AddPostModal({
   isOpen,
   onClose,
   createNewPostHandler,
 }: IAddPostModal) {
+  const [image, setImage] = useState('');
   const {
     register,
     handleSubmit,
@@ -37,7 +41,7 @@ function AddPostModal({
   });
 
   const submitHandler = (data: SubmitTextForm) => {
-    createNewPostHandler(data.text);
+    createNewPostHandler({ message: data.text, picture: image });
     onClose();
     reset();
   };
@@ -62,6 +66,7 @@ function AddPostModal({
                 {errors.text && errors.text.message}
               </FormErrorMessage>
             </FormControl>
+            <ImageResize setImage={setImage} />
           </ModalBody>
 
           <ModalFooter>

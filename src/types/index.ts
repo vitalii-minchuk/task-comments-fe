@@ -3,7 +3,18 @@ export enum OrderTypeType {
   DESC = 'desc',
 }
 
+export enum OrderByType {
+  USERNAME = 'username',
+  DATE = 'createdAt',
+  EMAIL = 'email',
+}
+
 export type SortPostOptionsType = {
   orderType: OrderTypeType;
-  orderBy: any;
+  orderBy: OrderByType;
+};
+
+export type MessageType = {
+  message: string;
+  picture?: string;
 };

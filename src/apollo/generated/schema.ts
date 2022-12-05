@@ -37,6 +37,7 @@ export type CreateCommentInput = {
 };
 
 export type CreatePostInput = {
+  image_url?: InputMaybe<Scalars['String']>;
   text: Scalars['String'];
 };
 
@@ -89,6 +90,7 @@ export type Post = {
   comments?: Maybe<Comment>;
   createdAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
+  image_url: Scalars['String'];
   text: Scalars['String'];
   total: Scalars['Int'];
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -120,6 +122,7 @@ export type RegisterUserInput = {
 
 export type User = {
   __typename?: 'User';
+  avatar?: Maybe<Scalars['String']>;
   comments?: Maybe<Comment>;
   createdAt?: Maybe<Scalars['DateTime']>;
   email: Scalars['String'];
@@ -157,7 +160,7 @@ export type GetPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', getAllPosts: Array<{ __typename?: 'Post', total: number, id: string, createdAt?: any | null, text: string, user: { __typename?: 'User', username: string } }> };
+export type GetPostsQuery = { __typename?: 'Query', getAllPosts: Array<{ __typename?: 'Post', total: number, id: string, createdAt?: any | null, text: string, image_url: string, user: { __typename?: 'User', username: string, email: string, avatar?: string | null } }> };
 
 export type LoginMutationVariables = Exact<{
   input: LoginUserInput;
@@ -169,14 +172,14 @@ export type LoginMutation = { __typename?: 'Mutation', login: string };
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string, email: string } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string, email: string, avatar?: string | null } };
 
 export type RegisterUserMutationVariables = Exact<{
   input: RegisterUserInput;
 }>;
 
 
-export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'User', username: string, email: string } };
+export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'User', username: string, email: string, avatar?: string | null } };
 
 
 export const CreateNewCommentDocument = gql`
@@ -295,8 +298,11 @@ export const GetPostsDocument = gql`
     id
     createdAt
     text
+    image_url
     user {
       username
+      email
+      avatar
     }
   }
 }
@@ -366,6 +372,7 @@ export const MeDocument = gql`
     id
     username
     email
+    avatar
   }
 }
     `;
@@ -401,6 +408,7 @@ export const RegisterUserDocument = gql`
   registerUser(input: $input) {
     username
     email
+    avatar
   }
 }
     `;

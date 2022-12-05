@@ -4,8 +4,11 @@ query GetPosts($posts: GetPostsInput!) {
     id
     createdAt
     text
+    image_url
     user {
       username
+      email
+      avatar
     }
   }
 }

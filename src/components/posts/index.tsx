@@ -2,53 +2,56 @@ import {
   Box,
   Button,
   Flex,
+  Select,
   Stack,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
 import Pagination from 'rc-pagination';
-import { useEffect, useState } from 'react';
 import 'rc-pagination/assets/index.css';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import {
   Post,
   useCreatePostMutation,
   useGetPostsQuery,
 } from '../../apollo/generated/schema';
+import { TAKE_2 } from '../../constants';
 import makeToast, { ToastStatus } from '../../helpers/make-toast';
+import {
+  MessageType,
+  OrderByType,
+  OrderTypeType,
+  SortPostOptionsType,
+} from '../../types';
 import AddPostModal from './modals/AddPostModal';
 import SinglePost from './post';
-import { OrderTypeType, SortPostOptionsType } from '../../types';
 
 function Posts() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const [current, setCurrent] = useState(0);
-  const [take, setTake] = useState(2);
   const [sortOptions, setSortOptions] = useState<SortPostOptionsType>({
-    orderBy: 'createdAt',
+    orderBy: OrderByType.DATE,
     orderType: OrderTypeType.DESC,
   });
-
-  const changePageHandler = (page: number) => {
-    console.log(page);
-    setCurrent(page - 1);
-  };
-
   const { data, refetch: refetchPosts } = useGetPostsQuery({
     refetchWritePolicy: 'merge',
     variables: {
       posts: {
-        take,
-        skip: current * take,
+        take: TAKE_2,
+        skip: current * TAKE_2,
         orderType: sortOptions.orderType,
         orderBy: sortOptions.orderBy,
       },
     },
   });
-
   const posts = data?.getAllPosts;
   const total = data?.getAllPosts[0]?.total;
+
+  const changePageHandler = (page: number) => {
+    setCurrent(page - 1);
+  };
 
   const [createNewPost, { error }] = useCreatePostMutation({
     onCompleted() {
@@ -56,11 +59,12 @@ function Posts() {
     },
   });
 
-  const createNewPostHandler = (post: string) => {
+  const createNewPostHandler = ({ message, picture }: MessageType) => {
     createNewPost({
       variables: {
         input: {
-          text: post,
+          text: message,
+          image_url: picture,
         },
       },
     });
@@ -80,7 +84,6 @@ function Posts() {
 
   const sortByTypeHandler = () => {
     if (sortOptions.orderType === OrderTypeType.DESC) {
-      console.log('first');
       setSortOptions({ ...sortOptions, orderType: OrderTypeType.ASC });
 
       return;
@@ -88,10 +91,13 @@ function Posts() {
     setSortOptions({ ...sortOptions, orderType: OrderTypeType.DESC });
   };
 
+  const sortByHandler = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSortOptions({ ...sortOptions, orderBy: e.target.value as OrderByType });
+  };
+
   useEffect(() => {
     refetchPosts();
-  }, [sortOptions]);
-  console.log(sortOptions.orderType);
+  }, [refetchPosts, sortOptions]);
 
   return (
     <>
@@ -99,6 +105,13 @@ function Posts() {
         <Flex justify="space-between">
           <Button onClick={onOpen}>Add post</Button>
           <Flex>
+            <Select onChange={sortByHandler} placeholder="order by">
+              <option value={OrderByType.DATE}>{OrderByType.DATE}</option>
+              <option value={OrderByType.EMAIL}>{OrderByType.EMAIL}</option>
+              <option value={OrderByType.USERNAME}>
+                {OrderByType.USERNAME}
+              </option>
+            </Select>
             <Button onClick={sortByTypeHandler}>Up</Button>
           </Flex>
         </Flex>
@@ -108,13 +121,15 @@ function Posts() {
               <SinglePost key={post.id} post={post as Post} />
             ))}
           </Stack>
-          <Pagination
-            onChange={changePageHandler}
-            current={current + 1}
-            pageSize={take}
-            className="ant-pagination"
-            total={total}
-          />
+          {total && TAKE_2 < total && (
+            <Pagination
+              onChange={changePageHandler}
+              current={current + 1}
+              pageSize={TAKE_2}
+              className="ant-pagination"
+              total={total}
+            />
+          )}
         </Box>
       </Box>
       <AddPostModal
