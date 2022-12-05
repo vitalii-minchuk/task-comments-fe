@@ -1,7 +1,5 @@
 import {
   Button,
-  FormControl,
-  FormErrorMessage,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -9,15 +7,17 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Textarea,
+  Text,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
+import { MessageType } from '../../../types';
 import { SubmitTextForm, textValidationSchema } from '../../../validation';
 import ImageResize from '../../common/image-resize';
-import { MessageType } from '../../../types';
 
 interface IAddPostModal {
   isOpen: boolean;
@@ -31,6 +31,8 @@ function AddPostModal({
 }: IAddPostModal) {
   const [image, setImage] = useState('');
   const {
+    setValue,
+    watch,
     register,
     handleSubmit,
     reset,
@@ -46,6 +48,16 @@ function AddPostModal({
     reset();
   };
 
+  useEffect(() => {
+    register('text');
+  }, [register]);
+
+  const onEditorStateChange = (editorState: string) => {
+    setValue('text', editorState);
+  };
+
+  const editorContent = watch('text');
+
   return (
     <Modal
       isOpen={isOpen}
@@ -60,12 +72,12 @@ function AddPostModal({
         <ModalCloseButton />
         <form onSubmit={handleSubmit(submitHandler)}>
           <ModalBody>
-            <FormControl isInvalid={!!errors.text}>
-              <Textarea id="text" {...register('text')} />
-              <FormErrorMessage>
-                {errors.text && errors.text.message}
-              </FormErrorMessage>
-            </FormControl>
+            <ReactQuill
+              theme="snow"
+              value={editorContent}
+              onChange={onEditorStateChange}
+            />
+            {errors.text && <Text color="red.500">{errors.text.message}</Text>}
             <ImageResize setImage={setImage} />
           </ModalBody>
 

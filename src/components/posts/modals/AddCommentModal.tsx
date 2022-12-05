@@ -1,7 +1,5 @@
 import {
   Button,
-  FormControl,
-  FormErrorMessage,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -9,11 +7,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Textarea,
+  Text,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import ReactQuill from 'react-quill';
 import { SubmitTextForm, textValidationSchema } from '../../../validation';
 import ImageResize from '../../common/image-resize';
 
@@ -29,6 +28,8 @@ function AddCommentModal({
 }: IAddCommentModalProps) {
   const [image, setImage] = useState('');
   const {
+    setValue,
+    watch,
     register,
     handleSubmit,
     reset,
@@ -44,6 +45,15 @@ function AddCommentModal({
     onClose();
   };
 
+  useEffect(() => {
+    register('text');
+  }, [register]);
+
+  const onEditorStateChange = (editorState: string) => {
+    setValue('text', editorState);
+  };
+
+  const editorContent = watch('text');
   return (
     <Modal
       isOpen={isOpen}
@@ -61,12 +71,12 @@ function AddCommentModal({
         <ModalCloseButton />
         <form onSubmit={handleSubmit(submitHandler)}>
           <ModalBody>
-            <FormControl isInvalid={!!errors.text}>
-              <Textarea id="text" {...register('text')} />
-              <FormErrorMessage>
-                {errors.text && errors.text.message}
-              </FormErrorMessage>
-            </FormControl>
+            <ReactQuill
+              theme="snow"
+              value={editorContent}
+              onChange={onEditorStateChange}
+            />
+            {errors.text && <Text color="red.500">{errors.text.message}</Text>}
             <ImageResize setImage={setImage} />
           </ModalBody>
 

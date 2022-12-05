@@ -61,6 +61,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   createNewComment: Comment;
   createNewPost: Post;
+  deleteData: Scalars['Boolean'];
+  generateFakeData: Scalars['Boolean'];
   login: Scalars['String'];
   registerUser: User;
 };
@@ -90,7 +92,7 @@ export type Post = {
   comments?: Maybe<Comment>;
   createdAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
-  image_url: Scalars['String'];
+  image_url?: Maybe<Scalars['String']>;
   text: Scalars['String'];
   total: Scalars['Int'];
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -116,6 +118,7 @@ export type QueryGetAllPostsArgs = {
 
 export type RegisterUserInput = {
   email: Scalars['String'];
+  homePageUrl?: InputMaybe<Scalars['String']>;
   password: Scalars['String'];
   username: Scalars['String'];
 };
@@ -148,6 +151,16 @@ export type GetAllPostCommentsQueryVariables = Exact<{
 
 export type GetAllPostCommentsQuery = { __typename?: 'Query', getAllPostComments: Array<{ __typename?: 'Comment', text: string, image_url: string, id: string, createdAt?: any | null, parentId?: string | null, user: { __typename?: 'User', username: string } }> };
 
+export type DeleteDataMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeleteDataMutation = { __typename?: 'Mutation', deleteData: boolean };
+
+export type GenerateFakeDataMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GenerateFakeDataMutation = { __typename?: 'Mutation', generateFakeData: boolean };
+
 export type CreatePostMutationVariables = Exact<{
   input: CreatePostInput;
 }>;
@@ -160,7 +173,7 @@ export type GetPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsQuery = { __typename?: 'Query', getAllPosts: Array<{ __typename?: 'Post', total: number, id: string, createdAt?: any | null, text: string, image_url: string, user: { __typename?: 'User', username: string, email: string, avatar?: string | null } }> };
+export type GetPostsQuery = { __typename?: 'Query', getAllPosts: Array<{ __typename?: 'Post', total: number, id: string, createdAt?: any | null, text: string, image_url?: string | null, user: { __typename?: 'User', username: string, email: string, avatar?: string | null } }> };
 
 export type LoginMutationVariables = Exact<{
   input: LoginUserInput;
@@ -258,6 +271,66 @@ export function useGetAllPostCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetAllPostCommentsQueryHookResult = ReturnType<typeof useGetAllPostCommentsQuery>;
 export type GetAllPostCommentsLazyQueryHookResult = ReturnType<typeof useGetAllPostCommentsLazyQuery>;
 export type GetAllPostCommentsQueryResult = Apollo.QueryResult<GetAllPostCommentsQuery, GetAllPostCommentsQueryVariables>;
+export const DeleteDataDocument = gql`
+    mutation DeleteData {
+  deleteData
+}
+    `;
+export type DeleteDataMutationFn = Apollo.MutationFunction<DeleteDataMutation, DeleteDataMutationVariables>;
+
+/**
+ * __useDeleteDataMutation__
+ *
+ * To run a mutation, you first call `useDeleteDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDataMutation, { data, loading, error }] = useDeleteDataMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeleteDataMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDataMutation, DeleteDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDataMutation, DeleteDataMutationVariables>(DeleteDataDocument, options);
+      }
+export type DeleteDataMutationHookResult = ReturnType<typeof useDeleteDataMutation>;
+export type DeleteDataMutationResult = Apollo.MutationResult<DeleteDataMutation>;
+export type DeleteDataMutationOptions = Apollo.BaseMutationOptions<DeleteDataMutation, DeleteDataMutationVariables>;
+export const GenerateFakeDataDocument = gql`
+    mutation GenerateFakeData {
+  generateFakeData
+}
+    `;
+export type GenerateFakeDataMutationFn = Apollo.MutationFunction<GenerateFakeDataMutation, GenerateFakeDataMutationVariables>;
+
+/**
+ * __useGenerateFakeDataMutation__
+ *
+ * To run a mutation, you first call `useGenerateFakeDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGenerateFakeDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [generateFakeDataMutation, { data, loading, error }] = useGenerateFakeDataMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGenerateFakeDataMutation(baseOptions?: Apollo.MutationHookOptions<GenerateFakeDataMutation, GenerateFakeDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GenerateFakeDataMutation, GenerateFakeDataMutationVariables>(GenerateFakeDataDocument, options);
+      }
+export type GenerateFakeDataMutationHookResult = ReturnType<typeof useGenerateFakeDataMutation>;
+export type GenerateFakeDataMutationResult = Apollo.MutationResult<GenerateFakeDataMutation>;
+export type GenerateFakeDataMutationOptions = Apollo.BaseMutationOptions<GenerateFakeDataMutation, GenerateFakeDataMutationVariables>;
 export const CreatePostDocument = gql`
     mutation CreatePost($input: CreatePostInput!) {
   createNewPost(input: $input) {

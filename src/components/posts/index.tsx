@@ -16,7 +16,7 @@ import {
   useCreatePostMutation,
   useGetPostsQuery,
 } from '../../apollo/generated/schema';
-import { TAKE_2 } from '../../constants';
+import { TAKE_25 } from '../../constants';
 import makeToast, { ToastStatus } from '../../helpers/make-toast';
 import {
   MessageType,
@@ -39,8 +39,8 @@ function Posts() {
     refetchWritePolicy: 'merge',
     variables: {
       posts: {
-        take: TAKE_2,
-        skip: current * TAKE_2,
+        take: TAKE_25,
+        skip: current * TAKE_25,
         orderType: sortOptions.orderType,
         orderBy: sortOptions.orderBy,
       },
@@ -121,11 +121,11 @@ function Posts() {
               <SinglePost key={post.id} post={post as Post} />
             ))}
           </Stack>
-          {total && TAKE_2 < total && (
+          {total && TAKE_25 < total && (
             <Pagination
               onChange={changePageHandler}
               current={current + 1}
-              pageSize={TAKE_2}
+              pageSize={TAKE_25}
               className="ant-pagination"
               total={total}
             />

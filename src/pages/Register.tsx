@@ -37,7 +37,7 @@ function Register() {
   });
   const [registerUser, { loading, error }] = useRegisterUserMutation({
     onCompleted() {
-      navigate('/');
+      navigate('/login');
       reset();
       toast(
         makeToast({
