@@ -1,5 +1,13 @@
-import { Box, Stack } from '@chakra-ui/react';
-import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  Input,
+  Stack,
+} from '@chakra-ui/react';
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react';
 import Resizer from 'react-image-file-resizer';
 
 const resizeFile = (file: File) =>
@@ -26,6 +34,11 @@ interface IImageResizeProps {
 function ImageResize({ setImage }: IImageResizeProps) {
   const [errorMessage, setErrorMessage] = useState('');
   const [shownImage, setShownImage] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const chooseImgHandler = () => {
+    inputRef.current?.click();
+  };
 
   const onChange = async (event: ChangeEvent<HTMLInputElement>) => {
     setErrorMessage('');
@@ -48,16 +61,31 @@ function ImageResize({ setImage }: IImageResizeProps) {
     }
   };
   return (
-    <Stack>
-      {errorMessage && <p>{errorMessage}</p>}
-      <input
-        accept="image/jpeg, image/png, image/gif"
-        type="file"
-        onChange={onChange}
-      />
-      <Box h={70} w={100}>
-        <img src={shownImage} alt="" />
-      </Box>
+    <Stack my={4} gap={4}>
+      <Button onClick={chooseImgHandler} variant="myInfo" transition="all .5s">
+        {shownImage ? 'change image' : 'choose image'}
+      </Button>
+      <Flex w="full" justify="center" gap={4}>
+        {shownImage && (
+          <Box h={70} w={100}>
+            <img src={shownImage} alt="chosen img" />
+          </Box>
+        )}
+        <FormControl
+          isInvalid={!!errorMessage}
+          w={errorMessage ? 100 : 0}
+          mt="12px"
+        >
+          <Input
+            ref={inputRef}
+            display="none"
+            accept="image/jpeg, image/png, image/gif"
+            type="file"
+            onChange={onChange}
+          />
+          <FormErrorMessage>{errorMessage}</FormErrorMessage>
+        </FormControl>
+      </Flex>
     </Stack>
   );
 }

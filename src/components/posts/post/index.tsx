@@ -1,6 +1,6 @@
 import { Box, Button, useDisclosure, useToast } from '@chakra-ui/react';
-import moment from 'moment';
 import parse from 'html-react-parser';
+import moment from 'moment';
 
 import { memo, useEffect } from 'react';
 
@@ -11,8 +11,9 @@ import {
   useGetAllPostCommentsQuery,
 } from '../../../apollo/generated/schema';
 import makeToast, { ToastStatus } from '../../../helpers/make-toast';
+import { AddCommentAndPostTitleEnum, MessageType } from '../../../types';
 import CommentsSection from '../comments';
-import AddCommentModal from '../modals/AddCommentModal';
+import AddCommentAndPostModal from '../modal';
 
 interface IPostProps {
   post: Post;
@@ -35,12 +36,12 @@ function SinglePost({ post }: IPostProps) {
     },
   });
 
-  const createNewCommentHandler = (comment: string, image_url: string) => {
+  const createMessageHandler = ({ message, picture }: MessageType) => {
     createNewComment({
       variables: {
         input: {
-          text: comment,
-          image_url,
+          text: message,
+          image_url: picture,
           postId: post.id,
         },
       },
@@ -65,7 +66,7 @@ function SinglePost({ post }: IPostProps) {
         {parse(post.text)} {post.user.username}
         {moment(new Date(post?.createdAt)).fromNow()}
         {post.user.avatar && <img src={post.user.avatar} alt="avatar" />}
-        {post.image_url && <img src={post.image_url} alt="some image" />}
+        {post.image_url && <img src={post.image_url} alt="some img" />}
         <Button onClick={onOpen}>ok</Button>
       </Box>
       <CommentsSection
@@ -73,8 +74,9 @@ function SinglePost({ post }: IPostProps) {
         comments={data?.getAllPostComments as Array<Comment>}
         postId={post.id}
       />
-      <AddCommentModal
-        createNewCommentHandler={createNewCommentHandler}
+      <AddCommentAndPostModal
+        title={AddCommentAndPostTitleEnum.Comment}
+        createMessageHandler={createMessageHandler}
         isOpen={isOpen}
         onClose={onClose}
       />

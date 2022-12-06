@@ -18,3 +18,8 @@ export type MessageType = {
   message: string;
   picture?: string;
 };
+
+export enum AddCommentAndPostTitleEnum {
+  Post = 'Post',
+  Comment = 'Comment',
+}

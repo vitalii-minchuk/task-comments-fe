@@ -6,7 +6,8 @@ import {
   useCreateNewCommentMutation,
 } from '../../../apollo/generated/schema';
 import { CommentWithChildren } from '../../../helpers/format-coments';
-import AddCommentModal from '../modals/AddCommentModal';
+import { AddCommentAndPostTitleEnum, MessageType } from '../../../types';
+import AddCommentAndPostModal from '../modal';
 
 interface ICommentProps {
   refetchComments: () => void;
@@ -22,12 +23,12 @@ function SingleComment({ comment, postId, refetchComments }: ICommentProps) {
     },
   });
 
-  const createNewCommentHandler = (newComment: string, image_url: string) => {
+  const createMessageHandler = ({ message, picture }: MessageType) => {
     createNewComment({
       variables: {
         input: {
-          text: newComment,
-          image_url,
+          text: message,
+          image_url: picture,
           postId,
           parentId: comment.id,
         },
@@ -50,8 +51,9 @@ function SingleComment({ comment, postId, refetchComments }: ICommentProps) {
           comments={comment.children}
         />
       </Box>
-      <AddCommentModal
-        createNewCommentHandler={createNewCommentHandler}
+      <AddCommentAndPostModal
+        title={AddCommentAndPostTitleEnum.Comment}
+        createMessageHandler={createMessageHandler}
         onClose={onClose}
         isOpen={isOpen}
       />

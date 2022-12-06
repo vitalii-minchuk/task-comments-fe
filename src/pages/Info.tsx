@@ -1,5 +1,4 @@
-import { Box, Button, Container, useToast } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { Box, Button, Container, Flex, Text, useToast } from '@chakra-ui/react';
 
 import {
   useDeleteDataMutation,
@@ -20,6 +19,17 @@ function Info() {
           })
         );
       },
+      onError() {
+        toast(
+          makeToast({
+            description:
+              generateError?.message ||
+              'Access denied! You need to be authorized to perform this action!',
+            title: 'Generate data',
+            status: ToastStatus.ERROR,
+          })
+        );
+      },
     });
   const [deleteData, { error: deleteError }] = useDeleteDataMutation({
     onCompleted() {
@@ -31,35 +41,38 @@ function Info() {
         })
       );
     },
-  });
-
-  useEffect(() => {
-    if (generateError?.message) {
+    onError() {
       toast(
         makeToast({
-          description: generateError.message,
-          title: 'Generate data',
-          status: ToastStatus.ERROR,
-        })
-      );
-    }
-
-    if (deleteError?.message) {
-      toast(
-        makeToast({
-          description: deleteError.message,
+          description:
+            deleteError?.message ||
+            'Access denied! You need to be authorized to perform this action!',
           title: 'Delete data',
           status: ToastStatus.ERROR,
         })
       );
-    }
-  }, [generateError, toast, deleteError]);
+    },
+  });
 
   return (
-    <Box w="full">
+    <Box w="full" py="70px">
       <Container maxWidth="4xl">
-        <Button onClick={() => generateFakeData()}>gen</Button>
-        <Button onClick={() => deleteData()}>delete</Button>
+        <Box w={3 / 4} mb="80px">
+          <Text fontSize="lg">
+            To test this app you need to register first, than log in using the
+            same email and password. Also you can generate some fake data to
+            work with, by pressing generate data button. In order to clean all
+            the data click delete data button
+          </Text>
+        </Box>
+        <Flex gap={4}>
+          <Button variant="myNormal" onClick={() => generateFakeData()}>
+            generate data
+          </Button>
+          <Button variant="myNormal" onClick={() => deleteData()}>
+            delete data
+          </Button>
+        </Flex>
       </Container>
     </Box>
   );

@@ -22,7 +22,7 @@ function formatComments(comments: Array<Comment>) {
     if (typeof arr[i].parentId === 'string') {
       const parentCommentIndex: number = map.get(arr[i].parentId);
 
-      (arr[parentCommentIndex] as CommentWithChildren).children?.push(
+      (arr[parentCommentIndex] as CommentWithChildren)?.children?.push(
         arr[i] as CommentWithChildren
       );
 

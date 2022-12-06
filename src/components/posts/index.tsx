@@ -1,9 +1,11 @@
+import { AddIcon, ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   Flex,
   Select,
   Stack,
+  Text,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
@@ -19,12 +21,13 @@ import {
 import { TAKE_25 } from '../../constants';
 import makeToast, { ToastStatus } from '../../helpers/make-toast';
 import {
+  AddCommentAndPostTitleEnum,
   MessageType,
   OrderByType,
   OrderTypeType,
   SortPostOptionsType,
 } from '../../types';
-import AddPostModal from './modals/AddPostModal';
+import AddCommentAndPostModal from './modal';
 import SinglePost from './post';
 
 function Posts() {
@@ -36,7 +39,7 @@ function Posts() {
     orderType: OrderTypeType.DESC,
   });
   const { data, refetch: refetchPosts } = useGetPostsQuery({
-    refetchWritePolicy: 'merge',
+    fetchPolicy: 'network-only',
     variables: {
       posts: {
         take: TAKE_25,
@@ -59,7 +62,7 @@ function Posts() {
     },
   });
 
-  const createNewPostHandler = ({ message, picture }: MessageType) => {
+  const createMessageHandler = ({ message, picture }: MessageType) => {
     createNewPost({
       variables: {
         input: {
@@ -102,17 +105,40 @@ function Posts() {
   return (
     <>
       <Box pt="70px">
-        <Flex justify="space-between">
-          <Button onClick={onOpen}>Add post</Button>
-          <Flex>
-            <Select onChange={sortByHandler} placeholder="order by">
+        <Flex
+          flexDirection={{ base: 'column', sm: 'row' }}
+          justify="space-between"
+          mb={10}
+          gap={4}
+        >
+          <Button rightIcon={<AddIcon />} variant="myNormal" onClick={onOpen}>
+            Add post
+          </Button>
+          <Flex align="center" gap={2}>
+            <Text whiteSpace="nowrap">order by:</Text>
+            <Select
+              cursor="pointer"
+              borderColor="#7928CA"
+              variant="flushed"
+              onChange={sortByHandler}
+            >
               <option value={OrderByType.DATE}>{OrderByType.DATE}</option>
               <option value={OrderByType.EMAIL}>{OrderByType.EMAIL}</option>
               <option value={OrderByType.USERNAME}>
                 {OrderByType.USERNAME}
               </option>
             </Select>
-            <Button onClick={sortByTypeHandler}>Up</Button>
+            <Button
+              _hover={{ bg: 'gray.800' }}
+              variant="text"
+              onClick={sortByTypeHandler}
+            >
+              {sortOptions.orderType === OrderTypeType.DESC ? (
+                <ArrowUpIcon />
+              ) : (
+                <ArrowDownIcon />
+              )}
+            </Button>
           </Flex>
         </Flex>
         <Box>
@@ -132,8 +158,9 @@ function Posts() {
           )}
         </Box>
       </Box>
-      <AddPostModal
-        createNewPostHandler={createNewPostHandler}
+      <AddCommentAndPostModal
+        title={AddCommentAndPostTitleEnum.Post}
+        createMessageHandler={createMessageHandler}
         isOpen={isOpen}
         onClose={onClose}
       />

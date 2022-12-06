@@ -4,23 +4,23 @@ import {
   Box,
   Button,
   Center,
-  CircularProgress,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input,
+  Spacer,
   Stack,
   useToast,
 } from '@chakra-ui/react';
-import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
 
 import { useRegisterUserMutation } from '../apollo/generated/schema';
+import makeToast, { ToastStatus } from '../helpers/make-toast';
 import {
   registerUserValidationSchema,
   UserSubmitRegisterForm,
 } from '../validation';
-import makeToast, { ToastStatus } from '../helpers/make-toast';
 
 function Register() {
   const toast = useToast();
@@ -73,7 +73,7 @@ function Register() {
     }
   }, [error, toast]);
   return (
-    <Center w="full" pt="50px">
+    <Center w="full" pt="70px" pb="20px">
       <Box
         w={{ base: '300px', md: '400px' }}
         bg="gray.800"
@@ -85,41 +85,82 @@ function Register() {
         rounded="lg"
       >
         <form onSubmit={handleSubmit(submitHandler)}>
-          <Stack gap={4}>
+          <Stack gap={2}>
             <FormControl isInvalid={!!errors.username}>
-              <FormLabel>User name</FormLabel>
-              <Input id="username" {...register('username')} type="text" />
-              <FormErrorMessage>
+              <FormLabel pl={3}>User name</FormLabel>
+              <Input
+                bg="transparent"
+                border="1px solid"
+                borderColor="gray.500"
+                rounded="lg"
+                _focus={{
+                  border: '1px solid #7928CA',
+                }}
+                id="username"
+                {...register('username')}
+                type="text"
+              />
+              <FormErrorMessage pl={3}>
                 {errors.username && errors.username.message}
               </FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={!!errors.email}>
-              <FormLabel>Email</FormLabel>
-              <Input id="email" {...register('email')} type="email" />
-              <FormErrorMessage>
+              <FormLabel pl={3}>Email</FormLabel>
+              <Input
+                bg="transparent"
+                border="1px solid"
+                borderColor="gray.500"
+                rounded="lg"
+                _focus={{
+                  border: '1px solid #7928CA',
+                }}
+                id="email"
+                {...register('email')}
+                type="email"
+              />
+              <FormErrorMessage pl={3}>
                 {errors.email && errors.email.message}
               </FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={!!errors.password}>
-              <FormLabel>Password</FormLabel>
-              <Input id="password" {...register('password')} type="password" />
-              <FormErrorMessage>
+              <FormLabel pl={3}>Password</FormLabel>
+              <Input
+                bg="transparent"
+                border="1px solid"
+                borderColor="gray.500"
+                rounded="lg"
+                _focus={{
+                  border: '1px solid #7928CA',
+                }}
+                id="password"
+                {...register('password')}
+                type="password"
+              />
+              <FormErrorMessage pl={3}>
                 {errors.password && errors.password.message}
               </FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={!!errors.homePageUrl}>
-              <FormLabel>Home page url</FormLabel>
+              <FormLabel pl={3}>Home page url</FormLabel>
               <Input
+                bg="transparent"
+                border="1px solid"
+                borderColor="gray.500"
+                rounded="lg"
+                _focus={{
+                  border: '1px solid #7928CA',
+                }}
                 id="homePageUrl"
                 {...register('homePageUrl')}
                 type="text"
               />
-              <FormErrorMessage>
+              <FormErrorMessage pl={3}>
                 {errors.homePageUrl && errors.homePageUrl.message}
               </FormErrorMessage>
             </FormControl>
-            <Button isLoading={loading} type="submit">
-              ok
+            <Spacer h="20px" />
+            <Button variant="mySubmit" type="submit" isLoading={loading}>
+              Submit
             </Button>
           </Stack>
         </form>

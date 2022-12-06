@@ -7,6 +7,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Spacer,
   Stack,
   useToast,
 } from '@chakra-ui/react';
@@ -81,20 +82,45 @@ function Login() {
         <form onSubmit={handleSubmit(submitHandler)}>
           <Stack gap={4}>
             <FormControl isInvalid={!!errors.email}>
-              <FormLabel>Email</FormLabel>
-              <Input id="email" type="email" {...register('email')} />
-              <FormErrorMessage>
+              <FormLabel pl={3}>Email</FormLabel>
+              <Input
+                bg="transparent"
+                border="1px solid"
+                borderColor="gray.500"
+                rounded="lg"
+                _focus={{
+                  border: '1px solid #7928CA',
+                }}
+                id="email"
+                type="email"
+                {...register('email')}
+              />
+              <FormErrorMessage pl={3}>
                 {errors.email && errors.email.message}
               </FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={!!errors.password}>
-              <FormLabel>Password</FormLabel>
-              <Input id="password" {...register('password')} type="password" />
-              <FormErrorMessage>
+              <FormLabel pl={3}>Password</FormLabel>
+              <Input
+                bg="transparent"
+                border="1px solid"
+                borderColor="gray.500"
+                rounded="lg"
+                _focus={{
+                  border: '1px solid #7928CA',
+                }}
+                id="password"
+                {...register('password')}
+                type="password"
+              />
+              <FormErrorMessage pl={3}>
                 {errors.password && errors.password.message}
               </FormErrorMessage>
             </FormControl>
-            <Button type="submit">Submit</Button>
+            <Spacer h="40px" />
+            <Button variant="mySubmit" type="submit" isLoading={loading}>
+              Submit
+            </Button>
           </Stack>
         </form>
       </Box>

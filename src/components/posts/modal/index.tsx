@@ -13,19 +13,24 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ReactQuill from 'react-quill';
+import { AddCommentAndPostTitleEnum, MessageType } from '../../../types';
 import { SubmitTextForm, textValidationSchema } from '../../../validation';
 import ImageResize from '../../common/image-resize';
+import 'react-quill/dist/quill.snow.css';
+import './quill.css';
 
-interface IAddCommentModalProps {
+interface IAddCommentAndPostModalProps {
   isOpen: boolean;
+  title: AddCommentAndPostTitleEnum;
   onClose: () => void;
-  createNewCommentHandler: (comment: string, image_url: string) => void;
+  createMessageHandler: ({ message, picture }: MessageType) => void;
 }
-function AddCommentModal({
+function AddCommentAndPostModal({
+  title,
   isOpen,
   onClose,
-  createNewCommentHandler,
-}: IAddCommentModalProps) {
+  createMessageHandler,
+}: IAddCommentAndPostModalProps) {
   const [image, setImage] = useState('');
   const {
     setValue,
@@ -35,12 +40,12 @@ function AddCommentModal({
     reset,
     formState: { errors },
   } = useForm<SubmitTextForm>({
-    mode: 'onTouched',
+    mode: 'onChange',
     resolver: yupResolver(textValidationSchema),
   });
 
   const submitHandler = (data: SubmitTextForm) => {
-    createNewCommentHandler(data.text, image);
+    createMessageHandler({ message: data.text, picture: image });
     reset();
     onClose();
   };
@@ -54,6 +59,7 @@ function AddCommentModal({
   };
 
   const editorContent = watch('text');
+
   return (
     <Modal
       isOpen={isOpen}
@@ -67,7 +73,7 @@ function AddCommentModal({
         bgGradient="radial(gray.900, gray.700)"
         borderColor="transparent"
       >
-        <ModalHeader>Comment</ModalHeader>
+        <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={handleSubmit(submitHandler)}>
           <ModalBody>
@@ -76,14 +82,18 @@ function AddCommentModal({
               value={editorContent}
               onChange={onEditorStateChange}
             />
-            {errors.text && <Text color="red.500">{errors.text.message}</Text>}
+            {errors.text && (
+              <Text ml={3} color="red.500">
+                {errors.text.message}
+              </Text>
+            )}
             <ImageResize setImage={setImage} />
           </ModalBody>
 
           <ModalFooter>
             <Button
-              colorScheme="blue"
-              mr={3}
+              variant="myNormal"
+              mr={4}
               onClick={() => {
                 onClose();
                 reset();
@@ -91,7 +101,7 @@ function AddCommentModal({
             >
               Close
             </Button>
-            <Button type="submit" variant="ghost">
+            <Button type="submit" variant="myAuth">
               Confirm
             </Button>
           </ModalFooter>
@@ -101,4 +111,4 @@ function AddCommentModal({
   );
 }
 
-export default AddCommentModal;
+export default AddCommentAndPostModal;
