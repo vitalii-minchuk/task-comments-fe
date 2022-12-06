@@ -142,7 +142,7 @@ function Posts() {
           </Flex>
         </Flex>
         <Box>
-          <Stack>
+          <Stack gap={3}>
             {posts?.map((post) => (
               <SinglePost key={post.id} post={post as Post} />
             ))}

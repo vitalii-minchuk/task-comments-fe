@@ -1,5 +1,4 @@
 import { Box } from '@chakra-ui/react';
-import { memo } from 'react';
 
 import { Comment, Post } from '../../../apollo/generated/schema';
 import formatComments from '../../../helpers/format-coments';
@@ -29,4 +28,4 @@ function CommentsSection({
   );
 }
 
-export default memo(CommentsSection);
+export default CommentsSection;

@@ -18,6 +18,7 @@ import { SubmitTextForm, textValidationSchema } from '../../../validation';
 import ImageResize from '../../common/image-resize';
 import 'react-quill/dist/quill.snow.css';
 import './quill.css';
+import { quillModulesOptions } from '../../../constants';
 
 interface IAddCommentAndPostModalProps {
   isOpen: boolean;
@@ -72,12 +73,14 @@ function AddCommentAndPostModal({
       <ModalContent
         bgGradient="radial(gray.900, gray.700)"
         borderColor="transparent"
+        mx={2}
       >
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={handleSubmit(submitHandler)}>
           <ModalBody>
             <ReactQuill
+              modules={quillModulesOptions}
               theme="snow"
               value={editorContent}
               onChange={onEditorStateChange}

@@ -76,12 +76,12 @@ function Register() {
     <Center w="full" pt="70px" pb="20px">
       <Box
         w={{ base: '300px', md: '400px' }}
-        bg="gray.800"
+        bgGradient="radial(black, gray.800)"
         px={4}
         py={8}
         boxShadow="3px 3px 15px #7928CA"
         border="1px solid"
-        borderColor="gray.500"
+        borderColor="gray.700"
         rounded="lg"
       >
         <form onSubmit={handleSubmit(submitHandler)}>

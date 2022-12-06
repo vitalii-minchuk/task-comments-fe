@@ -1,5 +1,17 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { Box, Button, useDisclosure } from '@chakra-ui/react';
+import {
+  Avatar,
+  Box,
+  Button,
+  Text,
+  Flex,
+  Image,
+  useDisclosure,
+  Stack,
+} from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
+import moment from 'moment';
+import parse from 'html-react-parser';
 
 import {
   Post,
@@ -38,19 +50,66 @@ function SingleComment({ comment, postId, refetchComments }: ICommentProps) {
 
   return (
     <>
-      <Box>
-        <Box>
-          {comment.text} {comment.user.username}
-        </Box>
-        <img src={comment.image_url} alt="some images" />
-        <Button onClick={onOpen}>ok</Button>
-
-        <ListComments
-          refetchComments={refetchComments}
-          postId={postId}
-          comments={comment.children}
-        />
+      <Box
+        boxShadow="2px 2px 10px #7928CA"
+        border="1px solid"
+        borderColor="gray.700"
+        rounded="lg"
+      >
+        <Flex align="center" justify="space-between" p={4} bg="transparent">
+          <Flex align="center" gap={4}>
+            <Avatar
+              boxShadow="2px 2px 10px #7928CA"
+              size={{ base: 'sm', md: 'md' }}
+              src={comment.user.avatar || ''}
+            />
+            <Text
+              fontWeight="bold"
+              fontSize="xl"
+              bgClip="text"
+              bgGradient="linear(to-l, #7928CA, #FF0080)"
+            >
+              {comment.user.username}
+            </Text>
+            <Text opacity={0.7} display={{ base: 'none', sm: 'flex' }}>
+              {comment.user.email}
+            </Text>
+          </Flex>
+          <Text fontSize="xs">
+            {moment(new Date(comment?.createdAt)).fromNow()}
+          </Text>
+        </Flex>
+        <Stack gap={8} py={6} px={4} bgGradient="radial(black, gray.700)">
+          <Text>{parse(comment.text)}</Text>
+          {comment.image_url && (
+            <Image
+              flexGrow={1}
+              alignSelf="center"
+              rounded="lg"
+              mr="auto"
+              maxW="320px"
+              maxHeight="240px"
+              objectFit="cover"
+              src={comment.image_url}
+              alt="some img"
+            />
+          )}
+          <Button
+            alignSelf="end"
+            w={{ base: 'full', sm: '180px' }}
+            rightIcon={<AddIcon />}
+            variant="myNormal"
+            onClick={onOpen}
+          >
+            add comment
+          </Button>
+        </Stack>
       </Box>
+      <ListComments
+        refetchComments={refetchComments}
+        postId={postId}
+        comments={comment.children}
+      />
       <AddCommentAndPostModal
         title={AddCommentAndPostTitleEnum.Comment}
         createMessageHandler={createMessageHandler}
@@ -72,7 +131,13 @@ function ListComments({
   refetchComments,
 }: IListCommentsProps) {
   return (
-    <Box borderLeft="1px solid" borderColor="gray.600" pl="15px">
+    <Stack
+      mt={3}
+      gap={3}
+      borderLeft="1px solid"
+      borderColor="gray.600"
+      pl="15px"
+    >
       {comments?.map((comment) => (
         <SingleComment
           refetchComments={refetchComments}
@@ -81,7 +146,7 @@ function ListComments({
           comment={comment}
         />
       ))}
-    </Box>
+    </Stack>
   );
 }
 
