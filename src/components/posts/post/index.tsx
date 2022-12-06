@@ -10,6 +10,7 @@ import {
   Text,
   useDisclosure,
   useToast,
+  Collapse,
 } from '@chakra-ui/react';
 import parse from 'html-react-parser';
 import moment from 'moment';
@@ -24,6 +25,7 @@ import { AddCommentAndPostTitleEnum, MessageType } from '../../../types';
 import AddCommentAndPostModal from '../modal';
 import CommentsSection from '../comments';
 import { CommentWithChildren } from '../../../helpers/format-coments';
+import checkText from '../../../helpers/fake-text-cheker';
 
 interface IPostProps {
   post: Post;
@@ -43,6 +45,7 @@ function SinglePost({ post }: IPostProps) {
 
   const [createNewComment, { error }] = useCreateNewCommentMutation({
     onCompleted() {
+      setIsShowComments(true);
       refetchComments();
     },
   });
@@ -103,7 +106,7 @@ function SinglePost({ post }: IPostProps) {
           </Text>
         </Flex>
         <Stack gap={8} py={6} px={4} bgGradient="radial(black, gray.700)">
-          <Text>{parse(post.text)}</Text>
+          {checkText(post.text) ? parse(post.text) : <Text>{post.text}</Text>}
           {post.image_url && (
             <Image
               flexGrow={1}
@@ -140,11 +143,13 @@ function SinglePost({ post }: IPostProps) {
           </Flex>
         </Stack>
       </Box>
-      <CommentsSection
-        refetchComments={refetchComments}
-        comments={data?.getAllPostComments as Array<CommentWithChildren>}
-        postId={post.id}
-      />
+      <Collapse startingHeight={3} in={isShowComments} animateOpacity>
+        <CommentsSection
+          refetchComments={refetchComments}
+          comments={data?.getAllPostComments as Array<CommentWithChildren>}
+          postId={post.id}
+        />
+      </Collapse>
       <AddCommentAndPostModal
         title={AddCommentAndPostTitleEnum.Comment}
         createMessageHandler={createMessageHandler}

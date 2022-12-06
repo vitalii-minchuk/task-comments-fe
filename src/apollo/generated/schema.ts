@@ -149,7 +149,7 @@ export type GetAllPostCommentsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllPostCommentsQuery = { __typename?: 'Query', getAllPostComments: Array<{ __typename?: 'Comment', text: string, image_url: string, id: string, createdAt?: any | null, parentId?: string | null, user: { __typename?: 'User', username: string } }> };
+export type GetAllPostCommentsQuery = { __typename?: 'Query', getAllPostComments: Array<{ __typename?: 'Comment', text: string, image_url: string, id: string, createdAt?: any | null, parentId?: string | null, user: { __typename?: 'User', username: string, avatar?: string | null, email: string } }> };
 
 export type DeleteDataMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -239,6 +239,8 @@ export const GetAllPostCommentsDocument = gql`
     parentId
     user {
       username
+      avatar
+      email
     }
   }
 }

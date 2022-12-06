@@ -7,6 +7,8 @@ query GetAllPostComments($input: GetPostCommentsInput!) {
     parentId
     user {
       username
+      avatar
+      email
     }
   }
 }

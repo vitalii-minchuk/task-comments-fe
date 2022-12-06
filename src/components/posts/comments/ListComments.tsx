@@ -20,6 +20,7 @@ import {
 import { CommentWithChildren } from '../../../helpers/format-coments';
 import { AddCommentAndPostTitleEnum, MessageType } from '../../../types';
 import AddCommentAndPostModal from '../modal';
+import checkText from '../../../helpers/fake-text-cheker';
 
 interface ICommentProps {
   refetchComments: () => void;
@@ -80,7 +81,11 @@ function SingleComment({ comment, postId, refetchComments }: ICommentProps) {
           </Text>
         </Flex>
         <Stack gap={8} py={6} px={4} bgGradient="radial(black, gray.700)">
-          <Text>{parse(comment.text)}</Text>
+          {checkText(comment.text) ? (
+            parse(comment.text)
+          ) : (
+            <Text>{comment.text}</Text>
+          )}
           {comment.image_url && (
             <Image
               flexGrow={1}

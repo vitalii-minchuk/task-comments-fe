@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Collapse, ScaleFade } from '@chakra-ui/react';
 
 import { Comment, Post } from '../../../apollo/generated/schema';
 import formatComments from '../../../helpers/format-coments';

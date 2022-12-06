@@ -8,25 +8,28 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react';
-import Resizer from 'react-image-file-resizer';
+// @ts-ignore
+import imageResize from '../../../utils/imageResize';
 
-const resizeFile = (file: File) =>
-  new Promise((resolve) => {
-    Resizer.imageFileResizer(
-      file,
-      320,
-      240,
-      'JPEG',
-      100,
-      0,
-      (uri) => {
-        resolve(uri);
-      },
-      'base64',
-      50,
-      50
-    );
-  });
+// import Resizer from 'react-image-file-resizer';
+
+// const resizeFile = (file: File) =>
+//   new Promise((resolve) => {
+//     Resizer.imageFileResizer(
+//       file,
+//       320,
+//       240,
+//       'JPEG',
+//       100,
+//       0,
+//       (uri) => {
+//         resolve(uri);
+//       },
+//       'base64',
+//       50,
+//       50
+//     );
+//   });
 
 interface IImageResizeProps {
   setImage: Dispatch<SetStateAction<string>>;
@@ -46,7 +49,7 @@ function ImageResize({ setImage }: IImageResizeProps) {
 
     try {
       const file = event.target.files[0];
-      const image = await resizeFile(file);
+      const image = await imageResize(file);
 
       setShownImage(image as string);
 
