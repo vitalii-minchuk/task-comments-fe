@@ -51,6 +51,7 @@ function AddCommentAndPostModal({
     createMessageHandler({ message: data.text, picture: image });
     reset();
     onClose();
+    setImage("")
   };
 
   useEffect(() => {
