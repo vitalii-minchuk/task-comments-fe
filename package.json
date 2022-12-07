@@ -28,6 +28,7 @@
     "react-image-file-resizer": "^0.4.8",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.4.3",
+    "react-simple-typewriter": "^5.0.1",
     "yup": "^0.32.11"
   },
   "devDependencies": {

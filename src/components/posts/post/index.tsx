@@ -12,6 +12,7 @@ import {
   useToast,
   Collapse,
 } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import parse from 'html-react-parser';
 import moment from 'moment';
 
@@ -26,10 +27,12 @@ import AddCommentAndPostModal from '../modal';
 import CommentsSection from '../comments';
 import { CommentWithChildren } from '../../../helpers/format-coments';
 import checkText from '../../../helpers/fake-text-cheker';
+import { postVariants } from '../../../constants';
 
 interface IPostProps {
   post: Post;
 }
+
 function SinglePost({ post }: IPostProps) {
   const [isShowComments, setIsShowComments] = useState(false);
   const toast = useToast();
@@ -77,6 +80,11 @@ function SinglePost({ post }: IPostProps) {
   return (
     <>
       <Box
+        as={motion.div}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={postVariants}
         boxShadow="2px 2px 10px #7928CA"
         border="1px solid"
         borderColor="gray.700"
@@ -109,11 +117,9 @@ function SinglePost({ post }: IPostProps) {
           {checkText(post.text) ? parse(post.text) : <Text>{post.text}</Text>}
           {post.image_url && (
             <Image
-              flexGrow={1}
               alignSelf="center"
               rounded="lg"
-              mr="auto"
-              maxW="320px"
+              w={{ base: '200px', sm: '320px' }}
               maxHeight="240px"
               objectFit="cover"
               src={post.image_url}

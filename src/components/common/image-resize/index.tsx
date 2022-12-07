@@ -1,3 +1,4 @@
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -7,29 +8,25 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react';
-// @ts-ignore
-import imageResize from '../../../utils/imageResize';
+import Resizer from 'react-image-file-resizer';
 
-// import Resizer from 'react-image-file-resizer';
-
-// const resizeFile = (file: File) =>
-//   new Promise((resolve) => {
-//     Resizer.imageFileResizer(
-//       file,
-//       320,
-//       240,
-//       'JPEG',
-//       100,
-//       0,
-//       (uri) => {
-//         resolve(uri);
-//       },
-//       'base64',
-//       50,
-//       50
-//     );
-//   });
+const resizeFile = (file: File) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      320,
+      240,
+      'JPEG',
+      100,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      'base64',
+      50,
+      50
+    );
+  });
 
 interface IImageResizeProps {
   setImage: Dispatch<SetStateAction<string>>;
@@ -49,7 +46,7 @@ function ImageResize({ setImage }: IImageResizeProps) {
 
     try {
       const file = event.target.files[0];
-      const image = await imageResize(file);
+      const image = await resizeFile(file);
 
       setShownImage(image as string);
 
@@ -58,6 +55,7 @@ function ImageResize({ setImage }: IImageResizeProps) {
       }
 
       setImage(image as string);
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setErrorMessage(err.message);

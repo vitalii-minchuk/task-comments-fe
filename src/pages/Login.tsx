@@ -1,8 +1,9 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
   Center,
-  CircularProgress,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -12,11 +13,11 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 
 import { useLoginMutation } from '../apollo/generated/schema';
+import { loginVariants } from '../constants';
 import makeToast, { ToastStatus } from '../helpers/make-toast';
 import { loginUserValidationSchema, UserSubmitLoginForm } from '../validation';
 
@@ -70,6 +71,11 @@ function Login() {
   return (
     <Center w="full" pt="80px">
       <Box
+        as={motion.div}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={loginVariants}
         w={{ base: '300px', md: '400px' }}
         bgGradient="radial(black, gray.800)"
         px={4}

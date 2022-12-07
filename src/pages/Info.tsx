@@ -1,13 +1,22 @@
 import { Box, Button, Container, Flex, Text, useToast } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+import { Cursor, useTypewriter } from 'react-simple-typewriter';
 
 import {
   useDeleteDataMutation,
   useGenerateFakeDataMutation,
 } from '../apollo/generated/schema';
+import { infoButtonsVariants, infoText } from '../constants';
 import makeToast, { ToastStatus } from '../helpers/make-toast';
 
 function Info() {
+  const [text] = useTypewriter({
+    words: infoText,
+    loop: true,
+    delaySpeed: 700,
+  });
   const toast = useToast();
+
   const [generateFakeData, { error: generateError }] =
     useGenerateFakeDataMutation({
       onCompleted() {
@@ -31,6 +40,7 @@ function Info() {
         );
       },
     });
+
   const [deleteData, { error: deleteError }] = useDeleteDataMutation({
     onCompleted() {
       toast(
@@ -57,15 +67,15 @@ function Info() {
   return (
     <Box w="full" py="70px">
       <Container maxWidth="4xl">
-        <Box w={3 / 4} mb="80px">
-          <Text fontSize="lg">
-            To test this app you need to register first, than log in using the
-            same email and password. Also you can generate some fake data to
-            work with, by pressing generate data button. In order to clean all
-            the data click delete data button
-          </Text>
-        </Box>
-        <Flex gap={4}>
+        <Flex
+          mb="40px"
+          as={motion.div}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={infoButtonsVariants}
+          gap={4}
+        >
           <Button variant="myNormal" onClick={() => generateFakeData()}>
             generate data
           </Button>
@@ -73,6 +83,12 @@ function Info() {
             delete data
           </Button>
         </Flex>
+        <Box w={3 / 4}>
+          <Text fontSize="lg">
+            <span>{text}</span>
+            <Cursor cursorColor="#7928CA" />
+          </Text>
+        </Box>
       </Container>
     </Box>
   );

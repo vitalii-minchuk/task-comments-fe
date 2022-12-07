@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
   Button,
   Modal,
@@ -10,9 +12,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import ReactQuill from 'react-quill';
+import { motion } from 'framer-motion';
+
 import { AddCommentAndPostTitleEnum, MessageType } from '../../../types';
 import { SubmitTextForm, textValidationSchema } from '../../../validation';
 import ImageResize from '../../common/image-resize';
@@ -71,6 +73,10 @@ function AddCommentAndPostModal({
     >
       <ModalOverlay />
       <ModalContent
+        as={motion.div}
+        drag="x"
+        dragConstraints={{ left: -100, right: 100 }}
+        transition="0.5s linear"
         bgGradient="radial(gray.900, gray.700)"
         borderColor="transparent"
         mx={2}

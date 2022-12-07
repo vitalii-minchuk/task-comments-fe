@@ -12,6 +12,7 @@ import {
 import { AddIcon } from '@chakra-ui/icons';
 import moment from 'moment';
 import parse from 'html-react-parser';
+import { motion } from 'framer-motion';
 
 import {
   Post,
@@ -21,6 +22,7 @@ import { CommentWithChildren } from '../../../helpers/format-coments';
 import { AddCommentAndPostTitleEnum, MessageType } from '../../../types';
 import AddCommentAndPostModal from '../modal';
 import checkText from '../../../helpers/fake-text-cheker';
+import { commentVariants } from '../../../constants';
 
 interface ICommentProps {
   refetchComments: () => void;
@@ -52,6 +54,11 @@ function SingleComment({ comment, postId, refetchComments }: ICommentProps) {
   return (
     <>
       <Box
+        as={motion.div}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={commentVariants}
         boxShadow="2px 2px 10px #7928CA"
         border="1px solid"
         borderColor="gray.700"
@@ -88,11 +95,9 @@ function SingleComment({ comment, postId, refetchComments }: ICommentProps) {
           )}
           {comment.image_url && (
             <Image
-              flexGrow={1}
               alignSelf="center"
               rounded="lg"
-              mr="auto"
-              maxW="320px"
+              w={{ base: '200px', sm: '320px' }}
               maxHeight="240px"
               objectFit="cover"
               src={comment.image_url}
@@ -130,6 +135,7 @@ interface IListCommentsProps {
   postId: Post['id'];
   refetchComments: () => void;
 }
+
 function ListComments({
   comments,
   postId,

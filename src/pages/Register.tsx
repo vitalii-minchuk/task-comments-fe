@@ -13,6 +13,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 
 import { useRegisterUserMutation } from '../apollo/generated/schema';
@@ -21,6 +22,7 @@ import {
   registerUserValidationSchema,
   UserSubmitRegisterForm,
 } from '../validation';
+import { loginVariants } from '../constants';
 
 function Register() {
   const toast = useToast();
@@ -35,6 +37,7 @@ function Register() {
     mode: 'onTouched',
     resolver: yupResolver(registerUserValidationSchema),
   });
+
   const [registerUser, { loading, error }] = useRegisterUserMutation({
     onCompleted() {
       navigate('/login');
@@ -75,6 +78,11 @@ function Register() {
   return (
     <Center w="full" pt="70px" pb="20px">
       <Box
+        as={motion.div}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={loginVariants}
         w={{ base: '300px', md: '400px' }}
         bgGradient="radial(black, gray.800)"
         px={4}

@@ -1,21 +1,35 @@
-import { ArrowBackIcon, QuestionOutlineIcon } from '@chakra-ui/icons';
-import { Box, Button, Container, Flex, Heading, Text } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useMeQuery } from '../../../apollo/generated/schema';
+import { ArrowBackIcon, QuestionOutlineIcon } from '@chakra-ui/icons';
+import { Box, Button, Container, Flex, Heading } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+
+import { authVariants, logoVariants } from '../../../constants';
 
 function Header() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { data } = useMeQuery();
 
   return (
     <Box as="header" w="full" shadow="2px 1px 10px #7928CA">
       <Container maxWidth="4xl" position="relative">
-        <Flex align="center" justify="space-between" h="60px">
-          <Heading cursor="pointer" onClick={() => navigate('')}>
+        <Flex
+          as={motion.div}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          align="center"
+          justify="space-between"
+          h="60px"
+        >
+          <Heading
+            as={motion.div}
+            variants={logoVariants}
+            cursor="pointer"
+            onClick={() => navigate('')}
+          >
             Logo
           </Heading>
-          <Flex gap="10px">
+          <Flex as={motion.div} variants={authVariants} gap="10px">
             <Button variant="myAuth" onClick={() => navigate('/login')}>
               sign in
             </Button>

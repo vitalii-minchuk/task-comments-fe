@@ -1,3 +1,4 @@
+import { ChangeEvent, useEffect, useState } from 'react';
 import { AddIcon, ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -9,16 +10,16 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import Pagination from 'rc-pagination';
 import 'rc-pagination/assets/index.css';
-import { ChangeEvent, useEffect, useState } from 'react';
 
 import {
   Post,
   useCreatePostMutation,
   useGetPostsQuery,
 } from '../../apollo/generated/schema';
-import { TAKE_25 } from '../../constants';
+import { postsHeadingVariants, TAKE_25 } from '../../constants';
 import makeToast, { ToastStatus } from '../../helpers/make-toast';
 import {
   AddCommentAndPostTitleEnum,
@@ -34,12 +35,15 @@ function Posts() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const [current, setCurrent] = useState(0);
+
   const [sortOptions, setSortOptions] = useState<SortPostOptionsType>({
     orderBy: OrderByType.DATE,
     orderType: OrderTypeType.DESC,
   });
+
   const { data, refetch: refetchPosts } = useGetPostsQuery({
-    fetchPolicy: 'network-only',
+    // fetchPolicy: 'network-only',
+    refetchWritePolicy: 'merge',
     variables: {
       posts: {
         take: TAKE_25,
@@ -49,6 +53,7 @@ function Posts() {
       },
     },
   });
+
   const posts = data?.getAllPosts;
   const total = data?.getAllPosts[0]?.total;
 
@@ -106,6 +111,11 @@ function Posts() {
     <>
       <Box pt="70px">
         <Flex
+          as={motion.div}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={postsHeadingVariants}
           flexDirection={{ base: 'column', sm: 'row' }}
           justify="space-between"
           mb={10}
